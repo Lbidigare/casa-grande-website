@@ -1,0 +1,101 @@
+---
+import '@fontsource/eb-garamond/400.css';
+import '@fontsource/eb-garamond/400-italic.css';
+import '@fontsource/eb-garamond/500.css';
+import '@fontsource/source-sans-3/400.css';
+import '@fontsource/source-sans-3/600.css';
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import MobileBar from '../components/MobileBar.astro';
+import { site, isTBD, preview, unconfirmed, href } from '../lib/site';
+
+interface Props {
+  title?: string;
+  description: string;
+}
+const { title, description } = Astro.props;
+const p = site.property;
+const pageTitle = title ? `${title} | ${p.name}` : `${p.name} | ${p.city}, Michigan`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+
+// Structured data so search engines understand the property.
+const address = !isTBD(p.street_address)
+  ? {
+      '@type': 'PostalAddress',
+      streetAddress: p.street_address,
+      addressLocality: p.city,
+      addressRegion: p.state,
+      ...(isTBD(p.zip) ? {} : { postalCode: String(p.zip) }),
+      addressCountry: 'US',
+    }
+  : undefined;
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ApartmentComplex',
+  name: p.name,
+  url: new URL(href('/'), Astro.site).href,
+  telephone: site.contact.phone,
+  email: site.contact.email,
+  numberOfAccommodationUnits: p.unit_count,
+  petsAllowed: 'Cats',
+  ...(address ? { address } : {}),
+};
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href={href('/favicon.svg')} type="image/svg+xml" />
+    <meta name="theme-color" content="#1e2d45" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content={p.name} />
+    {preview && <meta name="robots" content="noindex" />}
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    <script is:inline>document.documentElement.classList.add('js');</script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    {preview && unconfirmed.length > 0 && (
+      <div class="preview-banner" role="note">
+        Preview version: {unconfirmed.length} detail{unconfirmed.length === 1 ? '' : 's'} still marked
+        <span class="tbd">to confirm</span>
+      </div>
+    )}
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+    <MobileBar />
+
+    <script>
+      const items = document.querySelectorAll('[data-reveal]');
+      if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver(
+          (entries) => entries.forEach((e) => {
+            if (e.isIntersecting) { e.target.classList.add('is-visible'); io.unobserve(e.target); }
+          }),
+          { rootMargin: '0px 0px -8% 0px' },
+        );
+        items.forEach((el) => io.observe(el));
+      } else {
+        items.forEach((el) => el.classList.add('is-visible'));
+      }
+    </script>
+  </body>
+</html>
+
+<style>
+  .preview-banner {
+    background: #fff9e0; color: #5a4a00; text-align: center;
+    font-size: 0.8125rem; padding: 0.45rem var(--gutter); border-bottom: 1px solid #eadb9a;
+  }
+</style>

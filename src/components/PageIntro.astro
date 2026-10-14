@@ -1,0 +1,18 @@
+---
+// Title block at the top of inner pages.
+interface Props { eyebrow: string; title: string }
+const { eyebrow, title } = Astro.props;
+---
+<section class="page-intro">
+  <div class="narrow center">
+    <span class="eyebrow">{eyebrow}</span>
+    <h1>{title}</h1>
+    <hr class="rule" />
+    <slot />
+  </div>
+</section>
+
+<style>
+  .page-intro { padding-block: clamp(3.5rem, 8vw, 6rem) clamp(2rem, 5vw, 3.5rem); }
+  .page-intro :global(p) { font-size: var(--step-1); margin-inline: auto; }
+</style>

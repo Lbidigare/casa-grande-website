@@ -1,0 +1,24 @@
+---
+// Call / Contact bar fixed to the bottom of the screen on phones.
+import { href, telLink } from '../lib/site';
+---
+<div class="mobile-bar" role="navigation" aria-label="Quick contact">
+  <a href={telLink}>Call</a>
+  <a href={href('/contact/')}>Contact</a>
+</div>
+
+<style>
+  .mobile-bar {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
+    display: grid; grid-template-columns: 1fr 1fr;
+    background: var(--navy); border-top: 1px solid var(--navy-deep);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .mobile-bar a {
+    display: flex; align-items: center; justify-content: center; min-height: 3.5rem;
+    color: var(--ivory); text-decoration: none;
+    font-size: 0.875rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+  }
+  .mobile-bar a + a { border-left: 1px solid rgba(250, 247, 240, 0.2); }
+  @media (min-width: 56rem) { .mobile-bar { display: none; } }
+</style>

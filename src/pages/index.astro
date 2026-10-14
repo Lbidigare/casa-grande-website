@@ -1,0 +1,118 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PhotoFrame from '../components/PhotoFrame.astro';
+import IncludedHighlights from '../components/IncludedHighlights.astro';
+import ApartmentCard from '../components/ApartmentCard.astro';
+import AmenityList from '../components/AmenityList.astro';
+import Gallery from '../components/Gallery.astro';
+import ContactPanel from '../components/ContactPanel.astro';
+import { site, href } from '../lib/site';
+import { photo } from '../lib/images';
+
+const p = site.property;
+const hero = photo(p.hero_photo);
+---
+<BaseLayout description={`${p.name}: a family-owned community of ${p.unit_count} one- and two-bedroom apartments in ${p.city}, Michigan, near Lake St. Clair. Heat and water included.`}>
+  <!-- Hero -->
+  <section class="hero" aria-labelledby="hero-heading">
+    <PhotoFrame image={hero} alt={`${p.name} exterior`} label="Exterior photo" ratio="auto" class="hero__photo" widths={[800, 1200, 1800, 2400]} sizes="100vw" eager />
+    <div class="hero__content">
+      <span class="hero__eyebrow">{p.city}, Michigan</span>
+      <h1 id="hero-heading">{p.name}</h1>
+      <p class="hero__tag">Family-owned apartments near Lake St. Clair</p>
+      <div class="btn-row">
+        <a class="btn btn--light" href={href('/apartments/')}>View Apartments</a>
+        <a class="btn btn--ghost-light" href={href('/contact/')}>Schedule a Tour</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Introduction -->
+  <section class="section intro">
+    <div class="narrow center" data-reveal>
+      <span class="eyebrow">Welcome</span>
+      <p class="intro__statement">{p.introduction}</p>
+    </div>
+  </section>
+
+  <IncludedHighlights />
+
+  <!-- Apartments -->
+  <section class="section section--cream" aria-labelledby="apartments-heading">
+    <div class="container">
+      <div class="center section-head" data-reveal>
+        <span class="eyebrow">The Apartments</span>
+        <h2 id="apartments-heading">One &amp; Two Bedrooms</h2>
+      </div>
+      <div class="apt-grid">
+        {site.apartments.map((apt: any) => <ApartmentCard apt={apt} />)}
+      </div>
+    </div>
+  </section>
+
+  <!-- Amenities -->
+  <section class="section" aria-labelledby="amenities-heading">
+    <div class="container">
+      <div class="center section-head" data-reveal>
+        <span class="eyebrow">Amenities</span>
+        <h2 id="amenities-heading">Everyday comforts</h2>
+      </div>
+      <AmenityList />
+      <p class="center more"><a class="text-link" href={href('/amenities/')}>All amenities &amp; policies</a></p>
+    </div>
+  </section>
+
+  <!-- Gallery preview -->
+  <section class="section section--cream" aria-labelledby="gallery-heading">
+    <div class="container">
+      <div class="center section-head" data-reveal>
+        <span class="eyebrow">Gallery</span>
+        <h2 id="gallery-heading">A look around</h2>
+      </div>
+      <Gallery items={site.gallery} limit={6} />
+      <p class="center more"><a class="text-link" href={href('/gallery/')}>View the full gallery</a></p>
+    </div>
+  </section>
+
+  <!-- Location -->
+  <section class="section location" aria-labelledby="location-heading">
+    <div class="container location__grid">
+      <div data-reveal>
+        <span class="eyebrow">Location</span>
+        <h2 id="location-heading">{p.city}, near Lake St. Clair</h2>
+        <hr class="rule" />
+        <p>A quiet residential setting in {p.city}, Macomb County, close to the shores of Lake St. Clair.</p>
+        <a class="text-link" href={href('/location/')}>Location &amp; directions</a>
+      </div>
+      <PhotoFrame alt="" label="Map" ratio="4 / 3" />
+    </div>
+  </section>
+
+  <ContactPanel />
+</BaseLayout>
+
+<style>
+  .hero { position: relative; min-height: min(88vh, 54rem); display: grid; }
+  .hero :global(.hero__photo) { position: absolute; inset: 0; height: 100%; aspect-ratio: auto !important; }
+  .hero :global(.frame__empty) { justify-content: flex-start; padding-top: 3rem; }
+  .hero::after {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(180deg, rgba(21, 32, 47, 0.15) 0%, rgba(21, 32, 47, 0.25) 45%, rgba(21, 32, 47, 0.72) 100%);
+  }
+  .hero__content {
+    position: relative; z-index: 1; align-self: end;
+    width: min(100% - 2 * var(--gutter), var(--max)); margin: 0 auto; padding-block: 6rem clamp(3rem, 8vw, 5.5rem);
+    color: var(--ivory);
+  }
+  .hero h1 { color: var(--ivory); margin-bottom: 0.25rem; }
+  .hero__eyebrow { display: block; font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; margin-bottom: 1rem; color: var(--sand); }
+  .hero__tag { font-family: var(--font-serif); font-style: italic; font-size: var(--step-2); margin-bottom: 2rem; }
+
+  .intro__statement { font-family: var(--font-serif); font-size: var(--step-2); line-height: 1.45; color: var(--navy); }
+
+  .section-head { margin-bottom: clamp(2rem, 5vw, 3.5rem); }
+  .apt-grid { display: grid; gap: clamp(1.25rem, 3vw, 2rem); grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); }
+  .more { margin-top: 2.5rem; max-width: none; }
+
+  .location__grid { display: grid; gap: 3rem; align-items: center; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); }
+</style>

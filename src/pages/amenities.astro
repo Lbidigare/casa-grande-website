@@ -1,0 +1,53 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageIntro from '../components/PageIntro.astro';
+import IncludedHighlights from '../components/IncludedHighlights.astro';
+import AmenityList from '../components/AmenityList.astro';
+import Value from '../components/Value.astro';
+import ContactPanel from '../components/ContactPanel.astro';
+import { site } from '../lib/site';
+
+const policies = [
+  { title: 'Cats', value: site.policies?.cats, intro: 'Casa Grande is cat-friendly.' },
+  { title: 'Parking', value: site.policies?.parking, intro: 'On-site parking is available for residents.' },
+  { title: 'Carports', value: site.policies?.carports, intro: 'Covered carports are available as an option.' },
+];
+---
+<BaseLayout title="Amenities" description={`Amenities at ${site.property.name}: heat and water included, private locked basement storage, on-site parking, optional carports, and a cat-friendly policy.`}>
+  <PageIntro eyebrow="Amenities" title="What’s Included">
+    <p>The practical things that make day-to-day living easier.</p>
+  </PageIntro>
+
+  <IncludedHighlights />
+
+  <section class="section">
+    <div class="container">
+      <AmenityList />
+    </div>
+  </section>
+
+  <section class="section section--cream" aria-labelledby="policies-heading">
+    <div class="container">
+      <div class="center" data-reveal>
+        <span class="eyebrow">Good to Know</span>
+        <h2 id="policies-heading">Cats, Parking &amp; Carports</h2>
+      </div>
+      <div class="policies">
+        {policies.map((p) => (
+          <div class="policies__item" data-reveal>
+            <h3>{p.title}</h3>
+            <p>{p.intro}</p>
+            <p><Value value={p.value} label={`${p.title} details`} /></p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <ContactPanel />
+</BaseLayout>
+
+<style>
+  .policies { display: grid; gap: 2.5rem; margin-top: 3rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); }
+  .policies__item { border-top: 1px solid var(--sand); padding-top: 1.5rem; }
+</style>

@@ -1,0 +1,71 @@
+---
+import { site, href, telLink, mailLink } from '../lib/site';
+import Value from './Value.astro';
+
+const listings = [
+  { label: 'Zillow', url: site.property.other_listings?.zillow },
+  { label: 'Apartments.com', url: site.property.other_listings?.apartments_com },
+  { label: 'Facebook', url: site.property.other_listings?.facebook },
+].filter((l) => l.url);
+const year = new Date().getFullYear();
+---
+<footer class="site-footer">
+  <div class="container site-footer__grid">
+    <div>
+      <p class="site-footer__name">{site.property.name}</p>
+      <p>
+        <Value value={site.property.street_address} label="Street address" /><br />
+        {site.property.city}, {site.property.state} <Value value={site.property.zip} label="ZIP" />
+      </p>
+    </div>
+    <div>
+      <p class="site-footer__label">Contact</p>
+      <p>
+        <a href={telLink}>{site.contact.phone}</a><br />
+        <a href={mailLink}>{site.contact.email}</a>
+      </p>
+    </div>
+    <nav aria-label="Footer">
+      <p class="site-footer__label">Explore</p>
+      <ul>
+        <li><a href={href('/apartments/')}>Apartments</a></li>
+        <li><a href={href('/amenities/')}>Amenities</a></li>
+        <li><a href={href('/gallery/')}>Gallery</a></li>
+        <li><a href={href('/location/')}>Location</a></li>
+        <li><a href={href('/contact/')}>Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+  <div class="container site-footer__base">
+    <p>&copy; {year} {site.property.name}. Family owned and operated.</p>
+    <p>Equal Housing Opportunity</p>
+    {listings.length > 0 && (
+      <p>
+        Also listed on{' '}
+        {listings.map((l, i) => (
+          <>
+            {i > 0 && ' · '}
+            <a href={l.url} rel="noopener">{l.label}</a>
+          </>
+        ))}
+      </p>
+    )}
+  </div>
+</footer>
+
+<style>
+  .site-footer { background: var(--navy-deep); color: rgba(250, 247, 240, 0.85); padding-block: 4rem 6rem; font-size: 0.9375rem; }
+  .site-footer a { color: var(--ivory); text-decoration: none; }
+  .site-footer a:hover { text-decoration: underline; }
+  .site-footer__grid { display: grid; gap: 2rem; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); }
+  .site-footer__name { font-family: var(--font-serif); font-size: var(--step-2); color: var(--ivory); margin-bottom: 0.75rem; }
+  .site-footer__label { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--sand); margin-bottom: 0.75rem; }
+  .site-footer ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.35rem; }
+  .site-footer__base {
+    display: flex; flex-wrap: wrap; gap: 0.5rem 2rem; justify-content: space-between;
+    margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid rgba(217, 204, 180, 0.25);
+    font-size: 0.8125rem; color: rgba(250, 247, 240, 0.7);
+  }
+  .site-footer__base p { margin: 0; }
+  @media (min-width: 56rem) { .site-footer { padding-bottom: 4rem; } }
+</style>
