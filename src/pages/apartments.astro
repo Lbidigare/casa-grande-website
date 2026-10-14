@@ -15,9 +15,9 @@ const apartments = site.apartments.map((apt: any) => ({
   plan: floorPlan(apt.floor_plan),
 }));
 ---
-<BaseLayout title="Apartments" description={`One- and two-bedroom apartments at ${site.property.name} in ${site.property.city}, Michigan. Heat and water included, with private locked basement storage.`}>
+<BaseLayout title="Apartments" description={`One- and two-bedroom apartments at ${site.property.name} in ${site.property.city}, Michigan. Heat and water included, with a private locked basement and washer and dryer hookups.`}>
   <PageIntro eyebrow="The Apartments" title="One & Two Bedroom Apartments">
-    <p>Spacious floor plans with heat and water included, and a private, locked basement storage space for every apartment.</p>
+    <p>Spacious floor plans with heat and water included, and a private, locked basement with washer and dryer hookups for every apartment.</p>
   </PageIntro>
 
   {apartments.map((apt: any, i: number) => (
@@ -49,9 +49,15 @@ const apartments = site.apartments.map((apt: any) => ({
             <div><dt>Bathrooms</dt><dd><Value value={apt.bathrooms} label="Bathrooms" /></dd></div>
             <div><dt>Square feet</dt><dd><Value value={apt.square_feet} label="Sq ft" /></dd></div>
             <div><dt>Utilities</dt><dd>Heat &amp; water included</dd></div>
-            <div><dt>Storage</dt><dd>Private, locked basement storage</dd></div>
+            <div><dt>Basement</dt><dd>Private, locked, with washer &amp; dryer hookups</dd></div>
             <div><dt>Availability</dt><dd><Value value={apt.availability} label="Availability" fallback="Call for availability" /></dd></div>
           </dl>
+
+          {apt.features?.length > 0 && (
+            <ul class="apt__features">
+              {apt.features.map((f: string) => <li>{f}</li>)}
+            </ul>
+          )}
 
           <div class="btn-row">
             <a class="btn" href={href('/contact/')}>Ask About This Apartment</a>
@@ -80,6 +86,9 @@ const apartments = site.apartments.map((apt: any) => ({
   .apt__facts > div { padding: 0.85rem 0; border-bottom: 1px solid var(--sand); }
   .apt__facts dt { font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--taupe); }
   .apt__facts dd { margin: 0.15rem 0 0; }
+  .apt__features { list-style: none; padding: 0; margin: -0.5rem 0 2rem; }
+  .apt__features li { padding: 0.35rem 0 0.35rem 1.4rem; position: relative; }
+  .apt__features li::before { content: ''; position: absolute; left: 0; top: 0.95rem; width: 0.6rem; height: 1px; background: var(--brass-line); }
   .apt__plan { grid-column: 1 / -1; }
   .apt__plan h3 { text-align: center; }
   .apt__plan :global(.frame) { max-width: 52rem; margin-inline: auto; background: var(--white); }

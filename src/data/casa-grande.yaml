@@ -57,7 +57,7 @@ included_highlights:
   - title: Water Included
     text: Water is included in your monthly rent.
   - title: Private Basement
-    text: Every apartment has its own individually locked basement storage.
+    text: Every apartment has its own individually locked basement with washer and dryer hookups.
 
 apartments:
   - id: one-bedroom
@@ -66,11 +66,15 @@ apartments:
     bathrooms: TBD
     square_feet: TBD
     rent: 995                 # monthly, in dollars, numbers only
-    rent_confirmed: false     # set to true once the rent above is current
+    rent_confirmed: true      # set to false if the rent above needs checking
     # Examples: "Available now", "Available December 1",
     # "Join the waitlist", "Call for availability"
     availability: Call for availability
     description: TBD
+    # Features specific to this apartment type (shown on its details).
+    features:
+      - Large walk-in closet
+      - Bedroom large enough for a vanity or desk
     floor_plan: TBD           # file name in src/assets/floorplans/
     photos: []                # list of files in src/assets/photos/
 
@@ -80,9 +84,10 @@ apartments:
     bathrooms: TBD
     square_feet: TBD
     rent: 1140
-    rent_confirmed: false
+    rent_confirmed: true
     availability: Call for availability
     description: TBD
+    features: []
     floor_plan: TBD
     photos: []
 
@@ -92,29 +97,33 @@ amenities:
   in_your_apartment:
     - name: Heat and water included
       confirmed: true
-    - name: Central air conditioning
-      confirmed: false
-    - name: Full kitchen
-      confirmed: false
-    - name: Refrigerator
-      confirmed: false
-    - name: Stove
-      confirmed: false
+    - name: Refrigerator with freezer
+      confirmed: true
+    - name: Oven and stove
+      confirmed: true
     - name: Dishwasher
-      confirmed: false
-    - name: Built-in microwave
+      confirmed: true
+    - name: Microwave
+      confirmed: true
+    - name: Fans in the dining area and bedrooms
+      confirmed: true
+    - name: Coat closet
+      confirmed: true
+    - name: Central air conditioning
       confirmed: false
     - name: Garbage disposal
       confirmed: false
   community:
-    - name: Private, individually locked basement storage
+    - name: Private, individually locked basement
+      note: With washer and dryer hookups
       confirmed: true
     - name: On-site parking
       confirmed: true
     - name: Covered carports
-      note: Optional
+      note: Optional, additional charge
       confirmed: true
     - name: Cat-friendly
+      note: Additional charge
       confirmed: true
     - name: Community patio and outdoor seating
       confirmed: false
@@ -123,7 +132,7 @@ amenities:
 # Captions describe what each photo shows. Add the photo file when available.
 community_photos:
   - file: TBD
-    caption: Private, locked basement storage
+    caption: Private, locked basement with washer and dryer hookups
   - file: TBD
     caption: On-site parking and covered carports
   - file: TBD
@@ -131,14 +140,6 @@ community_photos:
 
 # Policy details shown on the Amenities page. Use TBD until confirmed.
 policies:
-  cats: TBD          # e.g. limit, deposit or monthly fee
-  carports: TBD      # e.g. monthly cost, how to reserve
+  cats: There is an additional charge for cats. Please ask for details.
+  carports: There is an additional charge for a carport. Please ask for details.
   parking: TBD       # e.g. assigned or open, guest parking
-
-# Property photo gallery. Categories:
-#   exterior, living, kitchens, bedrooms, bathrooms, basements, community
-# alt: a short plain description for screen readers and search engines.
-gallery: []
-#  - file: exterior/front-entrance.jpg
-#    category: exterior
-#    alt: Front entrance of Casa Grande Apartments

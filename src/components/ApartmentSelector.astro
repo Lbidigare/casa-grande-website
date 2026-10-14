@@ -18,7 +18,7 @@ const apartments = site.apartments.map((apt: any) => ({
     <div class="selector__intro" data-reveal>
       <span class="eyebrow">The Apartments</span>
       <h2 id="selector-heading">One &amp; Two Bedrooms</h2>
-      <p>Spacious floor plans, heat and water included, and private basement storage with every apartment.</p>
+      <p>Spacious floor plans, heat and water included, and a private, locked basement with washer and dryer hookups for every apartment.</p>
 
       <div class="selector__tabs" role="tablist" aria-label="Apartment type">
         {apartments.map((apt: any, i: number) => (
@@ -45,7 +45,8 @@ const apartments = site.apartments.map((apt: any) => ({
             <ul>
               <li><Value value={apt.square_feet} label="Sq ft">{apt.square_feet} sq ft</Value></li>
               <li>Heat &amp; water included</li>
-              <li>Private, locked basement storage</li>
+              <li>Private basement with washer &amp; dryer hookups</li>
+              {(apt.features ?? []).map((f: string) => <li>{f}</li>)}
               <li><Value value={apt.availability} label="Availability" fallback="Call for availability" /></li>
             </ul>
             <div class="btn-row">
