@@ -2,6 +2,7 @@
 import { site, href, telLink, mailLink, fullAddress } from '../lib/site';
 import Value from './Value.astro';
 import Wordmark from './Wordmark.astro';
+import Monogram from './Monogram.astro';
 
 const address = fullAddress();
 const mapLink = address ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${site.property.name}, ${address}`)}` : null;
@@ -17,6 +18,7 @@ const year = new Date().getFullYear();
   <div class="container site-footer__grid">
     <div>
       <a class="site-footer__brand" href={href('/')} aria-label={`${site.property.name}, home`}>
+        <Monogram size="4.5rem" class="site-footer__monogram" />
         <Wordmark variant={site.property.wordmark_style === 'inline' ? 'inline' : 'stacked'} size="footer" />
       </a>
       {mapLink ? (
@@ -68,7 +70,8 @@ const year = new Date().getFullYear();
   .site-footer a { color: var(--ivory); text-decoration: none; }
   .site-footer a:hover { text-decoration: underline; }
   .site-footer__grid { display: grid; gap: 2rem; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); }
-  .site-footer__brand { display: inline-block; margin-bottom: 1.25rem; }
+  .site-footer__brand { display: inline-flex; flex-direction: column; align-items: center; gap: 1rem; margin-bottom: 1.25rem; color: var(--ivory); }
+  .site-footer :global(.site-footer__monogram) { color: var(--brass-light); }
   .site-footer__brand:hover { text-decoration: none; }
   .site-footer__label { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--brass-light); margin-bottom: 0.75rem; }
   .site-footer ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.35rem; }

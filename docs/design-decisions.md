@@ -26,7 +26,9 @@ specific features rather than replacing earlier decisions.
 | 19 | Navy "Community" band with captioned photos (arrows, no autoplay) | 86 Cannon (experience) | Approved |
 | 20 | Muted brass accent for small labels and thin lines only | 86 Cannon (gold) | Approved |
 | 21 | Footer call to action; footer address links to Google Maps | 86 Cannon | Approved |
-| 22 | Large, easy-to-read text name in upper left: CASA GRANDE with ── APARTMENTS ── (or CASA ── GRANDE via `wordmark_style`) | 86 Cannon logo style | Option A in use, awaiting final choice |
+| 22 | Large, easy-to-read text name in upper left: CASA GRANDE with ── APARTMENTS ── | 86 Cannon logo style | Approved (Option A) |
+| 23 | Cream/ivory backgrounds kept as the main background | Owner | Approved |
+| 24 | CG laurel monogram redrawn from the entrance sign; used in hero, footer and browser tab icon | Entrance sign | Proposed |
 
 ## Design references received
 
