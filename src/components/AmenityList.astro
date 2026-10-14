@@ -1,0 +1,35 @@
+---
+// Two-column amenity list. Unconfirmed items show a marker in preview
+// mode and are left out entirely at launch.
+import { site, visible, preview } from '../lib/site';
+
+const groups = [
+  { title: 'In Your Apartment', items: visible(site.amenities.in_your_apartment) },
+  { title: 'Around the Community', items: visible(site.amenities.community) },
+];
+---
+<div class="amenities">
+  {groups.map((g) => (
+    <div class="amenities__group" data-reveal>
+      <h3>{g.title}</h3>
+      <ul>
+        {g.items.map((a: any) => (
+          <li>
+            {a.name}
+            {a.note && <span class="amenities__note"> ({a.note})</span>}
+            {preview && !a.confirmed && <> <span class="tbd">to confirm</span></>}
+          </li>
+        ))}
+      </ul>
+    </div>
+  ))}
+</div>
+
+<style>
+  .amenities { display: grid; gap: 3rem; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); }
+  .amenities h3 { font-size: var(--step-2); padding-bottom: 0.75rem; border-bottom: 1px solid var(--sand); margin-bottom: 0.5rem; }
+  .amenities ul { list-style: none; margin: 0; padding: 0; }
+  .amenities li { padding: 0.8rem 0; border-bottom: 1px solid var(--cream); }
+  .section--cream .amenities li { border-color: var(--sand); }
+  .amenities__note { color: var(--taupe); }
+</style>

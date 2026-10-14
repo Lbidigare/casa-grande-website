@@ -1,0 +1,67 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageIntro from '../components/PageIntro.astro';
+import { site, telLink, mailLink } from '../lib/site';
+
+// Opens the visitor's own email app with a helpful starting message.
+// Nothing is collected or stored by the website.
+const subject = 'Showing request: Casa Grande Apartments';
+const body = [
+  'Hello,',
+  '',
+  "I'm interested in Casa Grande Apartments.",
+  '',
+  'Apartment type (one or two bedroom):',
+  'Preferred days/times for a showing:',
+  'Planned move-in date:',
+  'Best phone number to reach me:',
+  '',
+  'Thank you,',
+].join('\n');
+const tourMail = `${mailLink}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+---
+<BaseLayout title="Contact & Tours" description={`Contact ${site.property.name} in ${site.property.city}, Michigan, to ask about apartments or arrange a showing. Call ${site.contact.phone}.`}>
+  <PageIntro eyebrow="Contact & Tours" title="Get in Touch">
+    <p>{site.contact.showing_note}</p>
+  </PageIntro>
+
+  <section class="section contact-page">
+    <div class="container contact-page__grid">
+      <a class="contact-card" href={telLink} data-reveal>
+        <span class="eyebrow">Call</span>
+        <span class="contact-card__value">{site.contact.phone}</span>
+      </a>
+      <a class="contact-card" href={mailLink} data-reveal>
+        <span class="eyebrow">Email</span>
+        <span class="contact-card__value">{site.contact.email}</span>
+      </a>
+    </div>
+
+    <div class="narrow contact-page__help" data-reveal>
+      <h2>Arranging a showing</h2>
+      <p>To help us respond quickly, please mention:</p>
+      <ul>
+        <li>Which apartment you're interested in (one or two bedroom)</li>
+        <li>Days and times that work for a showing</li>
+        <li>When you're hoping to move in</li>
+      </ul>
+      <a class="btn" href={tourMail}>Email a Showing Request</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .contact-page { padding-top: 0; }
+  .contact-page__grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); }
+  .contact-card {
+    display: block; text-decoration: none; text-align: center;
+    background: var(--cream); padding: clamp(2rem, 5vw, 3.5rem) 1.5rem;
+    border: 1px solid transparent; transition: border-color 0.3s var(--ease), background 0.3s var(--ease);
+  }
+  .contact-card:hover { border-color: var(--navy); background: var(--ivory); }
+  .contact-card__value { display: block; font-family: var(--font-serif); font-size: var(--step-3); color: var(--navy); overflow-wrap: anywhere; line-height: 1.2; }
+  .contact-page__help { margin-top: clamp(3rem, 7vw, 5rem); }
+  .contact-page__help h2 { font-size: var(--step-2); }
+  .contact-page__help ul { padding-left: 1.2rem; margin: 0 0 2rem; }
+  .contact-page__help li { margin-bottom: 0.4rem; }
+</style>

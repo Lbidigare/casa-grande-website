@@ -1,0 +1,46 @@
+---
+// Text logo used until (or alongside) the official Casa Grande logo.
+// stacked: CASA GRANDE with ── APARTMENTS ── beneath
+// inline:  CASA ── GRANDE
+interface Props {
+  variant?: 'stacked' | 'inline';
+  size?: 'header' | 'footer';
+}
+const { variant = 'stacked', size = 'header' } = Astro.props;
+---
+{variant === 'inline' ? (
+  <span class:list={['wm wm--inline', `wm--${size}`]}>
+    <span>Casa</span><span class="wm__line" aria-hidden="true"></span><span>Grande</span>
+  </span>
+) : (
+  <span class:list={['wm wm--stacked', `wm--${size}`]}>
+    <span class="wm__name">Casa Grande</span>
+    <span class="wm__sub">
+      <span class="wm__line" aria-hidden="true"></span>Apartments<span class="wm__line" aria-hidden="true"></span>
+    </span>
+  </span>
+)}
+
+<style>
+  .wm { display: inline-flex; color: inherit; font-family: var(--font-serif); font-weight: 500; text-transform: uppercase; line-height: 1; }
+  .wm__line { display: block; height: 1px; background: currentColor; opacity: 0.55; flex: none; }
+
+  .wm--stacked { flex-direction: column; align-items: center; }
+  .wm--stacked .wm__name { font-size: 1.75em; letter-spacing: 0.14em; margin-right: -0.14em; }
+  .wm--stacked .wm__sub {
+    display: flex; align-items: center; gap: 0.6em; margin-top: 0.45em;
+    font-family: var(--font-sans); font-weight: 600; font-size: 0.7em; letter-spacing: 0.4em; margin-right: -0.4em;
+  }
+  .wm--stacked .wm__sub .wm__line { width: 1.6em; }
+  .wm--stacked .wm__sub .wm__line:last-child { margin-left: -0.4em; }
+
+  .wm--inline { align-items: center; gap: 0.95em; }
+  .wm--inline > span:not(.wm__line) { font-size: 1.75em; letter-spacing: 0.14em; }
+  .wm--inline > span:last-child { margin-right: -0.14em; }
+  .wm--inline .wm__line { width: 3em; }
+
+  .wm--header { font-size: 1.3rem; }
+  .wm--footer { font-size: 1.3rem; }
+  @media (max-width: 64rem) { .wm--header { font-size: 1.1rem; } }
+  @media (max-width: 30rem) { .wm--header { font-size: 1rem; } }
+</style>

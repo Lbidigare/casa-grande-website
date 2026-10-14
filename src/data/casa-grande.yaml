@@ -1,0 +1,145 @@
+# =====================================================================
+#  CASA GRANDE APARTMENTS: WEBSITE INFORMATION
+#
+#  This one file controls the facts shown across the whole website:
+#  contact details, rent, availability, apartment descriptions,
+#  amenities and photos. Edit a value here, commit, and every page
+#  that uses it updates automatically in a few minutes.
+#
+#  Rules of thumb
+#  - Write TBD for anything not yet confirmed. The site shows a clearly
+#    marked placeholder instead of guessing.
+#  - Text with a colon (:) or starting with a symbol should go in "quotes".
+#  - Photo file names are relative to src/assets/photos/
+#    e.g.  exterior/front-entrance.jpg
+# =====================================================================
+
+# While true, placeholders and unconfirmed items appear with a yellow
+# "to confirm" marker so they are easy to spot.
+# Set to false at launch. The build will then stop with a list of
+# anything still TBD or unconfirmed, so nothing unverified goes live.
+preview_mode: true
+
+property:
+  name: Casa Grande Apartments
+  short_name: Casa Grande
+  unit_count: 32
+  street_address: TBD
+  city: Harrison Township
+  state: MI
+  zip: TBD
+  # One or two short sentences for the homepage introduction.
+  introduction: >-
+    Thirty-two apartments in Harrison Township, near Lake St. Clair.
+    Quiet, well kept, and managed by the people who own it.
+  # Text logo style shown until the official logo file is added:
+  #   stacked = CASA GRANDE with ── APARTMENTS ── beneath
+  #   inline  = CASA ── GRANDE
+  wordmark_style: stacked
+  # Main homepage photo (wide exterior shot works best).
+  hero_photo: TBD
+  # Optional links to listings elsewhere. Leave blank to hide.
+  # The website always points visitors to Casa Grande directly first.
+  other_listings:
+    zillow: ""
+    apartments_com: ""
+    facebook: ""
+
+contact:
+  phone: "(586) 463-5616"
+  email: livingcasagrande@gmail.com
+  showing_note: Call or email to arrange a showing.
+
+# Shown together, prominently, near the top of the homepage.
+included_highlights:
+  - title: Heat Included
+    text: Heat is included in your monthly rent.
+  - title: Water Included
+    text: Water is included in your monthly rent.
+  - title: Private Basement
+    text: Every apartment has its own individually locked basement with washer and dryer hookups.
+
+apartments:
+  - id: one-bedroom
+    name: One Bedroom
+    bedrooms: 1
+    bathrooms: TBD
+    square_feet: TBD
+    rent: 995                 # monthly, in dollars, numbers only
+    rent_confirmed: true      # set to false if the rent above needs checking
+    # Examples: "Available now", "Available December 1",
+    # "Join the waitlist", "Call for availability"
+    availability: Call for availability
+    description: TBD
+    # Features specific to this apartment type (shown on its details).
+    features:
+      - Large walk-in closet
+      - Bedroom large enough for a vanity or desk
+    floor_plan: TBD           # file name in src/assets/floorplans/
+    photos: []                # list of files in src/assets/photos/
+
+  - id: two-bedroom
+    name: Two Bedroom
+    bedrooms: 2
+    bathrooms: TBD
+    square_feet: TBD
+    rent: 1140
+    rent_confirmed: true
+    availability: Call for availability
+    description: TBD
+    features: []
+    floor_plan: TBD
+    photos: []
+
+# Set confirmed: true only for features that apply to every apartment
+# (or note the exception). Unconfirmed items are hidden at launch.
+amenities:
+  in_your_apartment:
+    - name: Heat and water included
+      confirmed: true
+    - name: Refrigerator with freezer
+      confirmed: true
+    - name: Oven and stove
+      confirmed: true
+    - name: Dishwasher
+      confirmed: true
+    - name: Microwave
+      confirmed: true
+    - name: Fans in the dining area and bedrooms
+      confirmed: true
+    - name: Coat closet
+      confirmed: true
+    - name: Central air conditioning
+      confirmed: false
+    - name: Garbage disposal
+      confirmed: false
+  community:
+    - name: Private, individually locked basement
+      note: With washer and dryer hookups
+      confirmed: true
+    - name: On-site parking
+      confirmed: true
+    - name: Covered carports
+      note: Optional, additional charge
+      confirmed: true
+    - name: Cat-friendly
+      note: Additional charge
+      confirmed: true
+    - name: Community patio and outdoor seating
+      confirmed: false
+
+# Navy "Community" band on the homepage: a short captioned slideshow.
+# Captions describe what each photo shows. Add the photo file when available.
+community_photos:
+  - file: TBD
+    caption: Private, locked basement with washer and dryer hookups
+  - file: TBD
+    caption: On-site parking and covered carports
+  - file: TBD
+    caption: The grounds
+
+# Policy details shown on the Amenities page. Use TBD until confirmed.
+policies:
+  cats: There is an additional charge for cats. Please ask for details.
+  carports: There is an additional charge for a carport. Please ask for details.
+  parking: TBD       # e.g. assigned or open, guest parking

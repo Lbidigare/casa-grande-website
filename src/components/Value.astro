@@ -1,0 +1,22 @@
+---
+// Shows a value from casa-grande.yaml, or a "to confirm" marker if it is TBD.
+// In launch mode a missing value shows the fallback text (if any).
+import { isTBD, preview } from '../lib/site';
+
+interface Props {
+  value: unknown;
+  label: string;
+  fallback?: string;
+  unconfirmed?: boolean;
+}
+const { value, label, fallback = '', unconfirmed = false } = Astro.props;
+const missing = isTBD(value);
+---
+{missing ? (
+  preview ? <span class="tbd">{label}: to confirm</span> : fallback
+) : (
+  <>
+    <slot>{value}</slot>
+    {unconfirmed && preview && <> <span class="tbd">to confirm</span></>}
+  </>
+)}

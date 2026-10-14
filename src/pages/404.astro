@@ -1,0 +1,11 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageIntro from '../components/PageIntro.astro';
+import { href } from '../lib/site';
+---
+<BaseLayout title="Page Not Found" description="The page you were looking for could not be found.">
+  <PageIntro eyebrow="404" title="Page not found">
+    <p>The page you were looking for isn't here.</p>
+    <p><a class="btn" href={href('/')}>Return Home</a></p>
+  </PageIntro>
+</BaseLayout>

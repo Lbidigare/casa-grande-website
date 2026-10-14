@@ -1,0 +1,47 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageIntro from '../components/PageIntro.astro';
+import PhotoFrame from '../components/PhotoFrame.astro';
+import Value from '../components/Value.astro';
+import ContactPanel from '../components/ContactPanel.astro';
+import { site, fullAddress } from '../lib/site';
+
+const p = site.property;
+const address = fullAddress();
+const query = encodeURIComponent(address ?? '');
+const google = `https://www.google.com/maps/dir/?api=1&destination=${query}`;
+const apple = `https://maps.apple.com/?daddr=${query}`;
+---
+<BaseLayout title="Location" description={`${p.name} is located in ${p.city}, Michigan, near Lake St. Clair. Address and directions.`}>
+  <PageIntro eyebrow="Location" title={`${p.city}, Michigan`}>
+    <p>A quiet residential setting near Lake St. Clair, in Macomb County.</p>
+  </PageIntro>
+
+  <section class="section location-page">
+    <div class="container location-page__grid">
+      <div data-reveal>
+        <h2>Address</h2>
+        <address>
+          {p.name}<br />
+          <Value value={p.street_address} label="Street address" /><br />
+          {p.city}, {p.state} <Value value={p.zip} label="ZIP" />
+        </address>
+        {address && (
+          <div class="btn-row">
+            <a class="btn" href={google} rel="noopener">Google Maps Directions</a>
+            <a class="btn btn--outline" href={apple} rel="noopener">Apple Maps</a>
+          </div>
+        )}
+      </div>
+      <PhotoFrame alt="" label="Map" ratio="4 / 3" />
+    </div>
+  </section>
+
+  <ContactPanel />
+</BaseLayout>
+
+<style>
+  .location-page { padding-top: 0; }
+  .location-page__grid { display: grid; gap: 3rem; align-items: center; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); }
+  address { font-style: normal; font-size: var(--step-1); margin-bottom: 2rem; }
+</style>

@@ -1,0 +1,96 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageIntro from '../components/PageIntro.astro';
+import PhotoFrame from '../components/PhotoFrame.astro';
+import Value from '../components/Value.astro';
+import ContactPanel from '../components/ContactPanel.astro';
+import { site, href, telLink, formatRent } from '../lib/site';
+import { photo, floorPlan } from '../lib/images';
+
+const apartments = site.apartments.map((apt: any) => ({
+  ...apt,
+  rentText: formatRent(apt.rent),
+  mainPhoto: photo(apt.photos?.[0]),
+  morePhotos: (apt.photos ?? []).slice(1).map((f: string) => photo(f)),
+  plan: floorPlan(apt.floor_plan),
+}));
+---
+<BaseLayout title="Apartments" description={`One- and two-bedroom apartments at ${site.property.name} in ${site.property.city}, Michigan. Heat and water included, with a private locked basement and washer and dryer hookups.`}>
+  <PageIntro eyebrow="The Apartments" title="One & Two Bedroom Apartments">
+    <p>Spacious floor plans with heat and water included, and a private, locked basement with washer and dryer hookups for every apartment.</p>
+  </PageIntro>
+
+  {apartments.map((apt: any, i: number) => (
+    <section id={apt.id} class:list={['section apt', { 'section--cream': i % 2 === 0 }]} aria-labelledby={`${apt.id}-heading`}>
+      <div class="container apt__grid">
+        <div class="apt__media" data-reveal>
+          <PhotoFrame image={apt.mainPhoto} alt={`${apt.name} apartment`} label={`${apt.name} photo`} ratio="4 / 3" />
+          {apt.morePhotos.length > 0 && (
+            <div class="apt__thumbs">
+              {apt.morePhotos.slice(0, 3).map((img: any) => (
+                <PhotoFrame image={img} alt={`${apt.name} apartment`} ratio="1 / 1" widths={[300, 500]} sizes="12rem" />
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div class="apt__info" data-reveal>
+          <span class="eyebrow">{apt.bedrooms} Bedroom{apt.bedrooms > 1 ? 's' : ''}</span>
+          <h2 id={`${apt.id}-heading`}>{apt.name}</h2>
+          <p class="apt__rent">
+            <Value value={apt.rentText} label="Rent" fallback="Call for pricing" unconfirmed={!apt.rent_confirmed}>
+              {apt.rentText}<span> per month</span>
+            </Value>
+          </p>
+          <p><Value value={apt.description} label="Description" /></p>
+
+          <dl class="apt__facts">
+            <div><dt>Bedrooms</dt><dd>{apt.bedrooms}</dd></div>
+            <div><dt>Bathrooms</dt><dd><Value value={apt.bathrooms} label="Bathrooms" /></dd></div>
+            <div><dt>Square feet</dt><dd><Value value={apt.square_feet} label="Sq ft" /></dd></div>
+            <div><dt>Utilities</dt><dd>Heat &amp; water included</dd></div>
+            <div><dt>Basement</dt><dd>Private, locked, with washer &amp; dryer hookups</dd></div>
+            <div><dt>Availability</dt><dd><Value value={apt.availability} label="Availability" fallback="Call for availability" /></dd></div>
+          </dl>
+
+          {apt.features?.length > 0 && (
+            <ul class="apt__features">
+              {apt.features.map((f: string) => <li>{f}</li>)}
+            </ul>
+          )}
+
+          <div class="btn-row">
+            <a class="btn" href={href('/contact/')}>Ask About This Apartment</a>
+            <a class="btn btn--outline" href={telLink}>Call {site.contact.phone}</a>
+          </div>
+        </div>
+
+        <div class="apt__plan" data-reveal>
+          <h3>Floor Plan</h3>
+          <PhotoFrame image={apt.plan} alt={`${apt.name} floor plan`} label={`${apt.name} floor plan`} ratio="4 / 3" />
+        </div>
+      </div>
+    </section>
+  ))}
+
+  <ContactPanel />
+</BaseLayout>
+
+<style>
+  .apt { scroll-margin-top: 5rem; }
+  .apt__grid { display: grid; gap: clamp(2rem, 5vw, 4rem); grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr)); align-items: start; }
+  .apt__thumbs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-top: 0.5rem; }
+  .apt__rent { font-family: var(--font-serif); font-size: var(--step-3); color: var(--navy); margin-bottom: 1rem; }
+  .apt__rent span { font-family: var(--font-sans); font-size: 1rem; color: var(--taupe); }
+  .apt__facts { display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin: 1.5rem 0 2rem; border-top: 1px solid var(--sand); }
+  .apt__facts > div { padding: 0.85rem 0; border-bottom: 1px solid var(--sand); }
+  .apt__facts dt { font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--taupe); }
+  .apt__facts dd { margin: 0.15rem 0 0; }
+  .apt__features { list-style: none; padding: 0; margin: -0.5rem 0 2rem; }
+  .apt__features li { padding: 0.35rem 0 0.35rem 1.4rem; position: relative; }
+  .apt__features li::before { content: ''; position: absolute; left: 0; top: 0.95rem; width: 0.6rem; height: 1px; background: var(--brass-line); }
+  .apt__plan { grid-column: 1 / -1; }
+  .apt__plan h3 { text-align: center; }
+  .apt__plan :global(.frame) { max-width: 52rem; margin-inline: auto; background: var(--white); }
+  .apt__plan :global(img) { object-fit: contain; }
+</style>

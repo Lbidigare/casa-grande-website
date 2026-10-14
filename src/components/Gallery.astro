@@ -1,0 +1,137 @@
+---
+// Photo grid with category filters and a full-screen viewer.
+// Photos and categories come from the gallery list in casa-grande.yaml.
+import { getImage } from 'astro:assets';
+import PhotoFrame from './PhotoFrame.astro';
+import { photo } from '../lib/images';
+
+const CATEGORIES = [
+  { id: 'exterior', label: 'Exterior' },
+  { id: 'living', label: 'Living Areas' },
+  { id: 'kitchens', label: 'Kitchens' },
+  { id: 'bedrooms', label: 'Bedrooms' },
+  { id: 'bathrooms', label: 'Bathrooms' },
+  { id: 'basements', label: 'Basements' },
+  { id: 'community', label: 'Community' },
+];
+
+interface Props {
+  items: { file: string; category: string; alt: string }[];
+  filters?: boolean;
+  limit?: number;
+}
+const { items = [], filters = false, limit } = Astro.props;
+
+const photos = await Promise.all(
+  items.slice(0, limit).map(async (item) => {
+    const image = photo(item.file)!;
+    const large = await getImage({ src: image, width: Math.min(2000, image.width), format: 'webp' });
+    return { ...item, image, large: large.src };
+  }),
+);
+const used = CATEGORIES.filter((c) => photos.some((p) => p.category === c.id));
+---
+{photos.length === 0 ? (
+  <div class="gallery-empty">
+    {CATEGORIES.map((c) => <PhotoFrame alt="" label={c.label} ratio="1 / 1" />)}
+  </div>
+) : (
+  <div class="gallery" data-gallery>
+    {filters && used.length > 1 && (
+      <div class="gallery__filters" role="group" aria-label="Filter photos">
+        <button type="button" aria-pressed="true" data-filter="all">All</button>
+        {used.map((c) => <button type="button" aria-pressed="false" data-filter={c.id}>{c.label}</button>)}
+      </div>
+    )}
+    <ul class="gallery__grid">
+      {photos.map((p) => (
+        <li data-category={p.category}>
+          <a href={p.large} data-full={p.large} data-alt={p.alt}>
+            <PhotoFrame image={p.image} alt={p.alt} ratio="1 / 1" widths={[400, 700, 1000]} sizes="(min-width: 64rem) 22rem, (min-width: 40rem) 45vw, 100vw" />
+          </a>
+        </li>
+      ))}
+    </ul>
+    <dialog class="lightbox" aria-label="Photo viewer">
+      <button type="button" class="lightbox__close" data-close aria-label="Close">×</button>
+      <button type="button" class="lightbox__nav lightbox__prev" data-prev aria-label="Previous photo">‹</button>
+      <img alt="" />
+      <button type="button" class="lightbox__nav lightbox__next" data-next aria-label="Next photo">›</button>
+    </dialog>
+  </div>
+)}
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-gallery]').forEach((gallery) => {
+    const links = () => [...gallery.querySelectorAll<HTMLAnchorElement>('li:not([hidden]) a[data-full]')];
+    const dialog = gallery.querySelector('dialog')!;
+    const img = dialog.querySelector('img')!;
+    let index = 0;
+
+    const show = (i: number) => {
+      const list = links();
+      index = (i + list.length) % list.length;
+      img.src = list[index].dataset.full!;
+      img.alt = list[index].dataset.alt ?? '';
+    };
+
+    gallery.addEventListener('click', (e) => {
+      const link = (e.target as HTMLElement).closest<HTMLAnchorElement>('a[data-full]');
+      if (!link || !dialog.showModal) return;
+      e.preventDefault();
+      show(links().indexOf(link));
+      dialog.showModal();
+    });
+    dialog.querySelector('[data-close]')?.addEventListener('click', () => dialog.close());
+    dialog.querySelector('[data-prev]')?.addEventListener('click', () => show(index - 1));
+    dialog.querySelector('[data-next]')?.addEventListener('click', () => show(index + 1));
+    dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.close(); });
+    dialog.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') show(index - 1);
+      if (e.key === 'ArrowRight') show(index + 1);
+    });
+
+    gallery.querySelectorAll<HTMLButtonElement>('[data-filter]').forEach((btn, _, all) => {
+      btn.addEventListener('click', () => {
+        all.forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+        const f = btn.dataset.filter;
+        gallery.querySelectorAll<HTMLElement>('li[data-category]').forEach((li) => {
+          li.hidden = f !== 'all' && li.dataset.category !== f;
+        });
+      });
+    });
+  });
+</script>
+
+<style>
+  .gallery-empty, .gallery__grid {
+    list-style: none; margin: 0; padding: 0;
+    display: grid; gap: clamp(0.5rem, 1.5vw, 1rem);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+  }
+  .gallery__grid a { display: block; overflow: hidden; }
+  .gallery__grid :global(img) { transition: transform 1s var(--ease), opacity 0.4s var(--ease); }
+  .gallery__grid a:hover :global(img) { transform: scale(1.04); }
+
+  .gallery__filters { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; margin-bottom: 2rem; }
+  .gallery__filters button {
+    font: inherit; font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+    background: transparent; color: var(--charcoal); border: 1px solid var(--sand); border-radius: var(--radius);
+    padding: 0.55rem 1rem; min-height: 2.75rem; cursor: pointer;
+  }
+  .gallery__filters button[aria-pressed='true'] { background: var(--navy); border-color: var(--navy); color: var(--ivory); }
+
+  .lightbox {
+    width: 100vw; height: 100vh; max-width: none; max-height: none; margin: 0; padding: 0; border: 0;
+    background: rgba(21, 32, 47, 0.96); color: var(--ivory);
+  }
+  .lightbox[open] { display: flex; align-items: center; justify-content: center; }
+  .lightbox img { max-width: min(92vw, 110rem); max-height: 86vh; width: auto; object-fit: contain; }
+  .lightbox button {
+    position: absolute; background: none; border: 0; color: var(--ivory); cursor: pointer;
+    font-family: var(--font-serif); font-size: 2.75rem; line-height: 1; width: 3.5rem; height: 3.5rem;
+  }
+  .lightbox__close { top: 0.75rem; right: 0.75rem; }
+  .lightbox__prev { left: 0.5rem; top: 50%; transform: translateY(-50%); }
+  .lightbox__next { right: 0.5rem; top: 50%; transform: translateY(-50%); }
+</style>

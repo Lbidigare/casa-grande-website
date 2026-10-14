@@ -1,0 +1,59 @@
+---
+// "Heat Included · Water Included · Private Basement" in a thin frame,
+// with the title set into the top border line.
+import { site } from '../lib/site';
+
+const icons: Record<number, string> = {
+  // Simple line icons: flame, droplet, lock
+  0: 'M12 3c1.5 3.2 5 5.6 5 10a5 5 0 0 1-10 0c0-2.2 1-3.6 2-4.8.3 1.6 1.2 2.6 2.2 3 .2-3.2.8-5.8.8-8.2Z',
+  1: 'M12 3.5s-6 6.4-6 10.5a6 6 0 0 0 12 0c0-4.1-6-10.5-6-10.5Z',
+  2: 'M6.5 11h11v9h-11z M9 11V8a3 3 0 0 1 6 0v3 M12 14.5v2',
+};
+---
+<section class="section included" aria-labelledby="included-heading">
+  <div class="container">
+    <div class="included__frame" data-reveal>
+      <h2 id="included-heading" class="included__title">Included With Every Apartment</h2>
+      <ul class="included__list">
+        {site.included_highlights.map((item: { title: string; text: string }, i: number) => (
+          <li class="included__item">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d={icons[i] ?? icons[0]} fill="none" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round" />
+            </svg>
+            <h3>{item.title}</h3>
+            <p>{item.text}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .included { padding-block: clamp(2.5rem, 6vw, 4.5rem); }
+  .included__frame {
+    position: relative; border: 1px solid var(--brass-line);
+    padding: clamp(2.75rem, 6vw, 4rem) clamp(1.25rem, 4vw, 3rem) clamp(2rem, 5vw, 3rem);
+  }
+  .included__title {
+    position: absolute; top: 0; left: 50%; transform: translate(-50%, -50%);
+    margin: 0; padding: 0 1.25rem; background: var(--ivory); white-space: nowrap;
+    font-family: var(--font-sans); font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--brass);
+  }
+  .section--cream .included__title { background: var(--cream); }
+  .included__list {
+    list-style: none; margin: 0; padding: 0;
+    display: grid; gap: 2.5rem; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+    text-align: center;
+  }
+  .included__item svg { width: 2.75rem; height: 2.75rem; color: var(--brass-line); margin: 0 auto 1rem; }
+  .included__item h3 { font-size: var(--step-3); margin-bottom: 0.4rem; }
+  .included__item p { color: var(--taupe); margin-inline: auto; max-width: 22ch; margin-bottom: 0; }
+  @media (min-width: 48rem) {
+    .included__item + .included__item { border-left: 1px solid var(--sand); }
+  }
+  @media (max-width: 30rem) {
+    .included__title { font-size: 0.6875rem; letter-spacing: 0.14em; padding: 0 0.6rem; }
+  }
+</style>

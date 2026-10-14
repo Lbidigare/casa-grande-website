@@ -1,0 +1,22 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageIntro from '../components/PageIntro.astro';
+import Gallery from '../components/Gallery.astro';
+import ContactPanel from '../components/ContactPanel.astro';
+import { site } from '../lib/site';
+---
+<BaseLayout title="Gallery" description={`Photos of ${site.property.name} in ${site.property.city}, Michigan: exterior, apartment interiors, kitchens, private basements and community areas.`}>
+  <PageIntro eyebrow="Gallery" title="Photo Gallery">
+    <p>Photographs of Casa Grande and its apartments.</p>
+  </PageIntro>
+  <section class="section gallery-page">
+    <div class="container">
+      <Gallery items={site.gallery} filters />
+    </div>
+  </section>
+  <ContactPanel />
+</BaseLayout>
+
+<style>
+  .gallery-page { padding-top: 0; }
+</style>
