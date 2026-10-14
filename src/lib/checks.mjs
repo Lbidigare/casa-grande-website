@@ -5,7 +5,7 @@ const isTBD = (v) =>
   v === undefined || v === null || (typeof v === 'string' && (v.trim() === '' || v.trim().toUpperCase() === 'TBD'));
 
 // Fields that may be left blank without blocking launch.
-const OPTIONAL = [/^property\.other_listings\./, /\.photos$/, /^gallery$/];
+const OPTIONAL = [/^property\.other_listings\./, /\.photos$/, /^gallery$/, /^community_photos\[\d+\]\.file$/];
 
 export function findUnconfirmed(data) {
   const found = [];

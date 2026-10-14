@@ -30,9 +30,12 @@ property:
   zip: TBD
   # One or two short sentences for the homepage introduction.
   introduction: >-
-    A family-owned community of 32 apartments in Harrison Township,
-    near Lake St. Clair. Quiet, well kept, and
-    managed by the people who own it.
+    Thirty-two apartments in Harrison Township, near Lake St. Clair.
+    Quiet, well kept, and managed by the people who own it.
+  # Text logo style shown until the official logo file is added:
+  #   stacked = CASA GRANDE with ── APARTMENTS ── beneath
+  #   inline  = CASA ── GRANDE
+  wordmark_style: stacked
   # Main homepage photo (wide exterior shot works best).
   hero_photo: TBD
   # Optional links to listings elsewhere. Leave blank to hide.
@@ -115,6 +118,16 @@ amenities:
       confirmed: true
     - name: Community patio and outdoor seating
       confirmed: false
+
+# Navy "Community" band on the homepage: a short captioned slideshow.
+# Captions describe what each photo shows. Add the photo file when available.
+community_photos:
+  - file: TBD
+    caption: Private, locked basement storage
+  - file: TBD
+    caption: On-site parking and covered carports
+  - file: TBD
+    caption: The grounds
 
 # Policy details shown on the Amenities page. Use TBD until confirmed.
 policies:

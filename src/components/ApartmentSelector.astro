@@ -1,0 +1,141 @@
+---
+// Homepage apartment chooser: pick One Bedroom / Two Bedroom on the right,
+// and the large photo with its details panel changes on the left.
+// Without JavaScript, both apartments simply show one after the other.
+import PhotoFrame from './PhotoFrame.astro';
+import Value from './Value.astro';
+import { site, href, telLink, formatRent } from '../lib/site';
+import { photo } from '../lib/images';
+
+const apartments = site.apartments.map((apt: any) => ({
+  ...apt,
+  image: photo(apt.photos?.[0]),
+  rentText: formatRent(apt.rent),
+}));
+---
+<section class="section section--cream selector" aria-labelledby="selector-heading" data-selector>
+  <div class="container selector__grid">
+    <div class="selector__intro" data-reveal>
+      <span class="eyebrow">The Apartments</span>
+      <h2 id="selector-heading">One &amp; Two Bedrooms</h2>
+      <p>Spacious floor plans, heat and water included, and private basement storage with every apartment.</p>
+
+      <div class="selector__tabs" role="tablist" aria-label="Apartment type">
+        {apartments.map((apt: any, i: number) => (
+          <button type="button" role="tab" id={`tab-${apt.id}`} aria-controls={`panel-${apt.id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1}>
+            {apt.name}
+          </button>
+        ))}
+      </div>
+      <a class="text-link" href={href('/apartments/')}>View All Apartment Details</a>
+    </div>
+
+    <div class="selector__stage">
+      {apartments.map((apt: any, i: number) => (
+        <div class="selector__panel" role="tabpanel" id={`panel-${apt.id}`} aria-labelledby={`tab-${apt.id}`} data-active={i === 0 ? 'true' : 'false'}>
+          <PhotoFrame image={apt.image} alt={`${apt.name} apartment`} label={`${apt.name} photo`} ratio="1 / 1" sizes="(min-width: 64rem) 40rem, 100vw" />
+          <div class="selector__details">
+            <span class="selector__label">Details</span>
+            <h3>{apt.name}</h3>
+            <p class="selector__rent">
+              <Value value={apt.rentText} label="Rent" fallback="Call for pricing" unconfirmed={!apt.rent_confirmed}>
+                {apt.rentText}<span> / month</span>
+              </Value>
+            </p>
+            <ul>
+              <li><Value value={apt.square_feet} label="Sq ft">{apt.square_feet} sq ft</Value></li>
+              <li>Heat &amp; water included</li>
+              <li>Private, locked basement storage</li>
+              <li><Value value={apt.availability} label="Availability" fallback="Call for availability" /></li>
+            </ul>
+            <div class="btn-row">
+              <a class="btn btn--light btn--small" href={href(`/apartments/#${apt.id}`)}>View Apartment</a>
+              <a class="btn btn--ghost-light btn--small" href={telLink}>Call</a>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-selector]').forEach((root) => {
+    root.classList.add('is-enhanced');
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+    const select = (tab: HTMLButtonElement) => {
+      tabs.forEach((t) => {
+        const on = t === tab;
+        t.setAttribute('aria-selected', String(on));
+        t.tabIndex = on ? 0 : -1;
+        root.querySelector<HTMLElement>(`#${t.getAttribute('aria-controls')}`)!.dataset.active = String(on);
+      });
+    };
+    tabs.forEach((tab, i) => {
+      tab.addEventListener('click', () => select(tab));
+      tab.addEventListener('keydown', (e) => {
+        const step = e.key === 'ArrowDown' || e.key === 'ArrowRight' ? 1 : e.key === 'ArrowUp' || e.key === 'ArrowLeft' ? -1 : 0;
+        if (!step) return;
+        e.preventDefault();
+        const next = tabs[(i + step + tabs.length) % tabs.length];
+        next.focus();
+        select(next);
+      });
+    });
+  });
+</script>
+
+<style>
+  .selector__grid { display: grid; gap: clamp(2rem, 5vw, 4rem); align-items: center; }
+  @media (min-width: 64rem) {
+    .selector__grid { grid-template-columns: 1.5fr 1fr; }
+    .selector__stage { order: -1; }
+  }
+
+  /* Apartment names */
+  .selector__tabs { display: none; flex-direction: column; margin: 2rem 0 2.25rem; border-left: 1px solid var(--sand); }
+  .is-enhanced .selector__tabs { display: flex; }
+  .selector__tabs button {
+    position: relative; text-align: left; cursor: pointer; background: none; border: 0;
+    font-family: var(--font-serif); font-size: var(--step-2); color: var(--taupe);
+    padding: 0.55rem 0 0.55rem 1.5rem; transition: color 0.3s var(--ease);
+  }
+  .selector__tabs button::before {
+    content: ''; position: absolute; left: -1px; top: 0.4rem; bottom: 0.4rem; width: 2px;
+    background: var(--navy); transform: scaleY(0); transition: transform 0.4s var(--ease);
+  }
+  .selector__tabs button:hover { color: var(--navy); }
+  .selector__tabs button[aria-selected='true'] { color: var(--navy); }
+  .selector__tabs button[aria-selected='true']::before { transform: scaleY(1); }
+
+  /* Photo + details panel */
+  .selector__stage { display: grid; }
+  .selector__panel { position: relative; }
+  .selector__panel + .selector__panel { margin-top: 2rem; }
+  .is-enhanced .selector__panel { grid-area: 1 / 1; margin: 0; opacity: 0; visibility: hidden; transition: opacity 0.6s var(--ease), visibility 0s linear 0.6s; }
+  .is-enhanced .selector__panel[data-active='true'] { opacity: 1; visibility: visible; transition: opacity 0.6s var(--ease); }
+
+  .selector__details {
+    background: var(--navy); color: var(--ivory); padding: 1.75rem 1.5rem;
+  }
+  .selector__details h3 { color: var(--ivory); font-size: var(--step-3); margin-bottom: 0.25rem; }
+  .selector__label { display: block; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--brass-light); margin-bottom: 0.75rem; }
+  .selector__rent { font-family: var(--font-serif); font-size: var(--step-2); margin-bottom: 1rem; }
+  .selector__rent span { font-family: var(--font-sans); font-size: 0.875rem; color: rgba(250, 247, 240, 0.75); }
+  .selector__details ul { list-style: none; padding: 0; margin: 0 0 1.5rem; border-top: 1px solid rgba(250, 247, 240, 0.18); }
+  .selector__details li { padding: 0.5rem 0; border-bottom: 1px solid rgba(250, 247, 240, 0.18); font-size: 0.9375rem; }
+
+  /* On wide screens the details panel sits over the photo, sliding in */
+  @media (min-width: 48rem) {
+    .selector__details {
+      position: absolute; right: 1.5rem; bottom: 1.5rem; width: min(20rem, 58%);
+      background: rgba(30, 45, 69, 0.94);
+      transform: translateX(2.5rem); opacity: 0; transition: transform 0.8s var(--ease) 0.15s, opacity 0.8s var(--ease) 0.15s;
+    }
+    .selector__panel[data-active='true'] .selector__details,
+    .selector:not(.is-enhanced) .selector__details { transform: none; opacity: 1; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .selector__details, .is-enhanced .selector__panel { transition: none !important; }
+  }
+</style>

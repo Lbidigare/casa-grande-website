@@ -13,8 +13,9 @@ import { site, isTBD, preview, unconfirmed, href } from '../lib/site';
 interface Props {
   title?: string;
   description: string;
+  overlayHeader?: boolean;
 }
-const { title, description } = Astro.props;
+const { title, description, overlayHeader = false } = Astro.props;
 const p = site.property;
 const pageTitle = title ? `${title} | ${p.name}` : `${p.name} | ${p.city}, Michigan`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
@@ -63,18 +64,17 @@ const jsonLd = {
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
-    {preview && unconfirmed.length > 0 && (
-      <div class="preview-banner" role="note">
-        Preview version: {unconfirmed.length} detail{unconfirmed.length === 1 ? '' : 's'} still marked
-        <span class="tbd">to confirm</span>
-      </div>
-    )}
-    <Header />
+    <Header overlay={overlayHeader} />
     <main id="main">
       <slot />
     </main>
     <Footer />
     <MobileBar />
+    {preview && unconfirmed.length > 0 && (
+      <div class="preview-note" role="note">
+        Preview: {unconfirmed.length} detail{unconfirmed.length === 1 ? '' : 's'} <span class="tbd">to confirm</span>
+      </div>
+    )}
 
     <script>
       const items = document.querySelectorAll('[data-reveal]');
@@ -94,8 +94,10 @@ const jsonLd = {
 </html>
 
 <style>
-  .preview-banner {
-    background: #fff9e0; color: #5a4a00; text-align: center;
-    font-size: 0.8125rem; padding: 0.45rem var(--gutter); border-bottom: 1px solid #eadb9a;
+  .preview-note {
+    position: fixed; left: 0.75rem; bottom: 4.5rem; z-index: 45;
+    background: #fff9e0; color: #5a4a00; border: 1px solid #eadb9a; border-radius: var(--radius);
+    font-size: 0.75rem; padding: 0.3rem 0.6rem; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   }
+  @media (min-width: 56rem) { .preview-note { bottom: 0.75rem; } }
 </style>

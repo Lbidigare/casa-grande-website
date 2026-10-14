@@ -1,5 +1,6 @@
 ---
-// The "Heat Included · Water Included · Private Basement" band.
+// "Heat Included · Water Included · Private Basement" in a thin frame,
+// with the title set into the top border line.
 import { site } from '../lib/site';
 
 const icons: Record<number, string> = {
@@ -9,34 +10,50 @@ const icons: Record<number, string> = {
   2: 'M6.5 11h11v9h-11z M9 11V8a3 3 0 0 1 6 0v3 M12 14.5v2',
 };
 ---
-<section class="section section--navy included" aria-labelledby="included-heading">
+<section class="section included" aria-labelledby="included-heading">
   <div class="container">
-    <h2 id="included-heading" class="visually-hidden">Included with every apartment</h2>
-    <ul class="included__list">
-      {site.included_highlights.map((item: { title: string; text: string }, i: number) => (
-        <li class="included__item" data-reveal style={`transition-delay: ${i * 120}ms`}>
-          <svg viewBox="0 0 24 24" width="40" height="40" aria-hidden="true">
-            <path d={icons[i] ?? icons[0]} fill="none" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round" />
-          </svg>
-          <h3>{item.title}</h3>
-          <p>{item.text}</p>
-        </li>
-      ))}
-    </ul>
+    <div class="included__frame" data-reveal>
+      <h2 id="included-heading" class="included__title">Included With Every Apartment</h2>
+      <ul class="included__list">
+        {site.included_highlights.map((item: { title: string; text: string }, i: number) => (
+          <li class="included__item">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d={icons[i] ?? icons[0]} fill="none" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round" />
+            </svg>
+            <h3>{item.title}</h3>
+            <p>{item.text}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
   </div>
 </section>
 
 <style>
-  .included { padding-block: clamp(3.5rem, 7vw, 5.5rem); }
+  .included { padding-block: clamp(2.5rem, 6vw, 4.5rem); }
+  .included__frame {
+    position: relative; border: 1px solid var(--brass-line);
+    padding: clamp(2.75rem, 6vw, 4rem) clamp(1.25rem, 4vw, 3rem) clamp(2rem, 5vw, 3rem);
+  }
+  .included__title {
+    position: absolute; top: 0; left: 50%; transform: translate(-50%, -50%);
+    margin: 0; padding: 0 1.25rem; background: var(--ivory); white-space: nowrap;
+    font-family: var(--font-sans); font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--brass);
+  }
+  .section--cream .included__title { background: var(--cream); }
   .included__list {
     list-style: none; margin: 0; padding: 0;
-    display: grid; gap: 2.5rem; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    display: grid; gap: 2.5rem; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
     text-align: center;
   }
-  .included__item svg { width: 2.75rem; height: 2.75rem; color: var(--sand); margin: 0 auto 1rem; }
+  .included__item svg { width: 2.75rem; height: 2.75rem; color: var(--brass-line); margin: 0 auto 1rem; }
   .included__item h3 { font-size: var(--step-3); margin-bottom: 0.4rem; }
-  .included__item p { color: rgba(250, 247, 240, 0.8); margin-inline: auto; max-width: 22ch; }
+  .included__item p { color: var(--taupe); margin-inline: auto; max-width: 22ch; margin-bottom: 0; }
   @media (min-width: 48rem) {
-    .included__item + .included__item { border-left: 1px solid rgba(217, 204, 180, 0.3); }
+    .included__item + .included__item { border-left: 1px solid var(--sand); }
+  }
+  @media (max-width: 30rem) {
+    .included__title { font-size: 0.6875rem; letter-spacing: 0.14em; padding: 0 0.6rem; }
   }
 </style>

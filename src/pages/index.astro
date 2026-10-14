@@ -2,7 +2,8 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PhotoFrame from '../components/PhotoFrame.astro';
 import IncludedHighlights from '../components/IncludedHighlights.astro';
-import ApartmentCard from '../components/ApartmentCard.astro';
+import ApartmentSelector from '../components/ApartmentSelector.astro';
+import CommunityBand from '../components/CommunityBand.astro';
 import AmenityList from '../components/AmenityList.astro';
 import Gallery from '../components/Gallery.astro';
 import ContactPanel from '../components/ContactPanel.astro';
@@ -12,43 +13,37 @@ import { photo } from '../lib/images';
 const p = site.property;
 const hero = photo(p.hero_photo);
 ---
-<BaseLayout description={`${p.name}: a family-owned community of ${p.unit_count} one- and two-bedroom apartments in ${p.city}, Michigan, near Lake St. Clair. Heat and water included.`}>
+<BaseLayout overlayHeader description={`${p.name}: a family-owned community of ${p.unit_count} one- and two-bedroom apartments in ${p.city}, Michigan, near Lake St. Clair. Heat and water included.`}>
   <!-- Hero -->
   <section class="hero" aria-labelledby="hero-heading">
     <PhotoFrame image={hero} alt={`${p.name} exterior`} label="Exterior photo" ratio="auto" class="hero__photo" widths={[800, 1200, 1800, 2400]} sizes="100vw" eager />
     <div class="hero__content">
-      <span class="hero__eyebrow">{p.city}, Michigan</span>
-      <h1 id="hero-heading">{p.name}</h1>
-      <p class="hero__tag">Family-owned apartments near Lake St. Clair</p>
-      <div class="btn-row">
+      <span class="hero__eyebrow hero-in hero-in--1">{p.city}, Michigan</span>
+      <h1 id="hero-heading" class="hero-in hero-in--2">{p.name}</h1>
+      <p class="hero__tag hero-in hero-in--3">Family-owned apartments near Lake St. Clair</p>
+      <div class="btn-row hero-in hero-in--4">
         <a class="btn btn--light" href={href('/apartments/')}>View Apartments</a>
         <a class="btn btn--ghost-light" href={href('/contact/')}>Schedule a Tour</a>
       </div>
     </div>
   </section>
 
-  <!-- Introduction -->
-  <section class="section intro">
-    <div class="narrow center" data-reveal>
-      <span class="eyebrow">Welcome</span>
-      <p class="intro__statement">{p.introduction}</p>
+  <!-- Welcome: two columns -->
+  <section class="section welcome">
+    <div class="container welcome__grid">
+      <div data-reveal>
+        <span class="eyebrow">Welcome</span>
+        <h2>A Family-Owned Community</h2>
+      </div>
+      <div data-reveal>
+        <p class="welcome__text">{p.introduction}</p>
+      </div>
     </div>
   </section>
 
   <IncludedHighlights />
 
-  <!-- Apartments -->
-  <section class="section section--cream" aria-labelledby="apartments-heading">
-    <div class="container">
-      <div class="center section-head" data-reveal>
-        <span class="eyebrow">The Apartments</span>
-        <h2 id="apartments-heading">One &amp; Two Bedrooms</h2>
-      </div>
-      <div class="apt-grid">
-        {site.apartments.map((apt: any) => <ApartmentCard apt={apt} />)}
-      </div>
-    </div>
-  </section>
+  <ApartmentSelector />
 
   <!-- Amenities -->
   <section class="section" aria-labelledby="amenities-heading">
@@ -62,8 +57,10 @@ const hero = photo(p.hero_photo);
     </div>
   </section>
 
+  <CommunityBand />
+
   <!-- Gallery preview -->
-  <section class="section section--cream" aria-labelledby="gallery-heading">
+  <section class="section" aria-labelledby="gallery-heading">
     <div class="container">
       <div class="center section-head" data-reveal>
         <span class="eyebrow">Gallery</span>
@@ -75,7 +72,7 @@ const hero = photo(p.hero_photo);
   </section>
 
   <!-- Location -->
-  <section class="section location" aria-labelledby="location-heading">
+  <section class="section section--cream location" aria-labelledby="location-heading">
     <div class="container location__grid">
       <div data-reveal>
         <span class="eyebrow">Location</span>
@@ -92,26 +89,38 @@ const hero = photo(p.hero_photo);
 </BaseLayout>
 
 <style>
-  .hero { position: relative; min-height: min(88vh, 54rem); display: grid; }
+  .hero { position: relative; min-height: 100vh; min-height: 100svh; display: grid; background: var(--navy-deep); }
   .hero :global(.hero__photo) { position: absolute; inset: 0; height: 100%; aspect-ratio: auto !important; }
-  .hero :global(.frame__empty) { justify-content: flex-start; padding-top: 3rem; }
+  .hero :global(.frame__empty) { justify-content: flex-start; padding-top: 7rem; }
   .hero::after {
     content: ''; position: absolute; inset: 0; pointer-events: none;
-    background: linear-gradient(180deg, rgba(21, 32, 47, 0.15) 0%, rgba(21, 32, 47, 0.25) 45%, rgba(21, 32, 47, 0.72) 100%);
+    background: linear-gradient(180deg, rgba(21, 32, 47, 0.1) 0%, rgba(21, 32, 47, 0.2) 45%, rgba(21, 32, 47, 0.72) 100%);
   }
   .hero__content {
     position: relative; z-index: 1; align-self: end;
-    width: min(100% - 2 * var(--gutter), var(--max)); margin: 0 auto; padding-block: 6rem clamp(3rem, 8vw, 5.5rem);
+    width: min(100% - 2 * var(--gutter), var(--max)); margin: 0 auto; padding-block: 8rem clamp(4rem, 10vw, 6.5rem);
     color: var(--ivory);
   }
   .hero h1 { color: var(--ivory); margin-bottom: 0.25rem; }
-  .hero__eyebrow { display: block; font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; margin-bottom: 1rem; color: var(--sand); }
+  .hero__eyebrow { display: block; font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; margin-bottom: 1rem; color: var(--brass-light); }
   .hero__tag { font-family: var(--font-serif); font-style: italic; font-size: var(--step-2); margin-bottom: 2rem; }
 
-  .intro__statement { font-family: var(--font-serif); font-size: var(--step-2); line-height: 1.45; color: var(--navy); }
+  /* Staggered fade-in of the hero text on arrival */
+  .hero-in { animation: hero-in 1.2s var(--ease) both; }
+  .hero-in--1 { animation-delay: 0.2s; }
+  .hero-in--2 { animation-delay: 0.45s; }
+  .hero-in--3 { animation-delay: 0.7s; }
+  .hero-in--4 { animation-delay: 0.95s; }
+  @keyframes hero-in { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .hero-in { animation: none; } }
+
+  .welcome__grid { display: grid; gap: 1.5rem 4rem; align-items: start; }
+  @media (min-width: 56rem) { .welcome__grid { grid-template-columns: 5fr 7fr; } }
+  .welcome h2 { margin-bottom: 0; }
+  .welcome__text { font-family: var(--font-serif); font-size: var(--step-2); line-height: 1.5; color: var(--navy); margin: 0; }
+  @media (min-width: 56rem) { .welcome__text { padding-top: 2.1rem; } }
 
   .section-head { margin-bottom: clamp(2rem, 5vw, 3.5rem); }
-  .apt-grid { display: grid; gap: clamp(1.25rem, 3vw, 2rem); grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); }
   .more { margin-top: 2.5rem; max-width: none; }
 
   .location__grid { display: grid; gap: 3rem; align-items: center; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); }

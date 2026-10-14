@@ -1,6 +1,10 @@
 ---
-import { site, href, telLink, mailLink } from '../lib/site';
+import { site, href, telLink, mailLink, fullAddress } from '../lib/site';
 import Value from './Value.astro';
+import Wordmark from './Wordmark.astro';
+
+const address = fullAddress();
+const mapLink = address ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${site.property.name}, ${address}`)}` : null;
 
 const listings = [
   { label: 'Zillow', url: site.property.other_listings?.zillow },
@@ -12,11 +16,17 @@ const year = new Date().getFullYear();
 <footer class="site-footer">
   <div class="container site-footer__grid">
     <div>
-      <p class="site-footer__name">{site.property.name}</p>
-      <p>
-        <Value value={site.property.street_address} label="Street address" /><br />
-        {site.property.city}, {site.property.state} <Value value={site.property.zip} label="ZIP" />
-      </p>
+      <a class="site-footer__brand" href={href('/')} aria-label={`${site.property.name}, home`}>
+        <Wordmark variant={site.property.wordmark_style === 'inline' ? 'inline' : 'stacked'} size="footer" />
+      </a>
+      {mapLink ? (
+        <p><a href={mapLink} rel="noopener">{site.property.street_address}<br />{site.property.city}, {site.property.state} {site.property.zip}</a></p>
+      ) : (
+        <p>
+          <Value value={site.property.street_address} label="Street address" /><br />
+          {site.property.city}, {site.property.state} <Value value={site.property.zip} label="ZIP" />
+        </p>
+      )}
     </div>
     <div>
       <p class="site-footer__label">Contact</p>
@@ -58,8 +68,9 @@ const year = new Date().getFullYear();
   .site-footer a { color: var(--ivory); text-decoration: none; }
   .site-footer a:hover { text-decoration: underline; }
   .site-footer__grid { display: grid; gap: 2rem; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); }
-  .site-footer__name { font-family: var(--font-serif); font-size: var(--step-2); color: var(--ivory); margin-bottom: 0.75rem; }
-  .site-footer__label { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--sand); margin-bottom: 0.75rem; }
+  .site-footer__brand { display: inline-block; margin-bottom: 1.25rem; }
+  .site-footer__brand:hover { text-decoration: none; }
+  .site-footer__label { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--brass-light); margin-bottom: 0.75rem; }
   .site-footer ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.35rem; }
   .site-footer__base {
     display: flex; flex-wrap: wrap; gap: 0.5rem 2rem; justify-content: space-between;

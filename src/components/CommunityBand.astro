@@ -1,0 +1,81 @@
+---
+// Navy "Community" band: short text beside a captioned photo slideshow.
+// Slides change only when the visitor uses the arrows (no autoplay).
+import PhotoFrame from './PhotoFrame.astro';
+import { site, preview } from '../lib/site';
+import { photo } from '../lib/images';
+
+const slides = (site.community_photos ?? [])
+  .map((s: any) => ({ ...s, image: photo(s.file) }))
+  // At launch, only slides with a real photo are shown.
+  .filter((s: any) => preview || s.image);
+---
+{slides.length > 0 && (
+  <section class="section section--navy community" aria-labelledby="community-heading">
+    <div class="container community__grid">
+      <div class="community__text" data-reveal>
+        <span class="eyebrow">Community</span>
+        <h2 id="community-heading">Quiet, established living</h2>
+        <p>{site.property.unit_count} apartments in a quiet residential setting, family owned and operated.</p>
+      </div>
+
+      <div class="community__slider" data-slider aria-roledescription="carousel" aria-label="Community photos">
+        <div class="community__slides">
+          {slides.map((s: any, i: number) => (
+            <figure class="community__slide" data-active={i === 0 ? 'true' : 'false'} aria-roledescription="slide" aria-label={`${i + 1} of ${slides.length}`}>
+              <PhotoFrame image={s.image} alt={s.caption} label={s.caption} ratio="3 / 2" sizes="(min-width: 64rem) 40rem, 100vw" />
+              <figcaption>{s.caption}</figcaption>
+            </figure>
+          ))}
+        </div>
+        {slides.length > 1 && (
+          <div class="community__controls">
+            <button type="button" data-prev aria-label="Previous photo">‹</button>
+            <span class="community__count" aria-live="polite"><span data-current>1</span> / {slides.length}</span>
+            <button type="button" data-next aria-label="Next photo">›</button>
+          </div>
+        )}
+      </div>
+    </div>
+  </section>
+)}
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-slider]').forEach((slider) => {
+    const slides = [...slider.querySelectorAll<HTMLElement>('.community__slide')];
+    const counter = slider.querySelector('[data-current]');
+    let index = 0;
+    const go = (i: number) => {
+      index = (i + slides.length) % slides.length;
+      slides.forEach((s, n) => (s.dataset.active = String(n === index)));
+      if (counter) counter.textContent = String(index + 1);
+    };
+    slider.querySelector('[data-prev]')?.addEventListener('click', () => go(index - 1));
+    slider.querySelector('[data-next]')?.addEventListener('click', () => go(index + 1));
+  });
+</script>
+
+<style>
+  .community__grid { display: grid; gap: clamp(2rem, 5vw, 4rem); align-items: center; }
+  @media (min-width: 64rem) { .community__grid { grid-template-columns: 1fr 1.6fr; } }
+  .community__text p { color: rgba(250, 247, 240, 0.85); }
+
+  .community__slides { display: grid; }
+  .community__slide { grid-area: 1 / 1; margin: 0; opacity: 0; visibility: hidden; transition: opacity 0.8s var(--ease), visibility 0s linear 0.8s; }
+  .community__slide[data-active='true'] { opacity: 1; visibility: visible; transition: opacity 0.8s var(--ease); }
+  .community__slide :global(.frame) { background: rgba(250, 247, 240, 0.06); }
+  .community__slide :global(.frame__empty) { border-color: rgba(250, 247, 240, 0.2); color: var(--brass-light); }
+  .community figcaption {
+    margin-top: 1rem; font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--brass-light);
+  }
+  .community__controls { display: flex; align-items: center; gap: 1rem; margin-top: 1rem; }
+  .community__controls button {
+    width: 2.75rem; height: 2.75rem; cursor: pointer; border-radius: 50%;
+    background: transparent; color: var(--ivory); border: 1px solid rgba(250, 247, 240, 0.4);
+    font-family: var(--font-serif); font-size: 1.5rem; line-height: 1;
+    transition: background 0.3s var(--ease), color 0.3s var(--ease);
+  }
+  .community__controls button:hover { background: var(--ivory); color: var(--navy); }
+  .community__count { font-size: 0.875rem; letter-spacing: 0.1em; color: rgba(250, 247, 240, 0.75); }
+  @media (prefers-reduced-motion: reduce) { .community__slide { transition: none !important; } }
+</style>
